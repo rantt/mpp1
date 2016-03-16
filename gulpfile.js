@@ -1,6 +1,7 @@
 var gulp = require('gulp'),
     request = require('request'),
     fs = require('fs'),
+    nodemon = require('gulp-nodemon'),
     del = require('del'),
     jshint = require('gulp-jshint'),
     rename = require('gulp-rename'),
@@ -28,6 +29,43 @@ gulp.task('dev-server', function() {
     });
 });
 
+gulp.task('nodemon', function (cb) {
+  var called = false;
+  return nodemon({
+
+    // nodemon our expressjs server
+    script: 'src/server.js',
+
+    // watch core server file(s) that require server restart on change
+    watch: ['src/server.js']
+  })
+    .on('start', function onStart() {
+      // ensure start only got called once
+      if (!called) { cb(); }
+      called = true;
+    })
+    .on('restart', function onRestart() {
+      // reload connected browsers after a slight delay
+      setTimeout(function reload() {
+        browserSync.reload({
+          stream: false
+        });
+      }, BROWSER_SYNC_RELOAD_DELAY);
+    });
+});
+
+
+
+gulp.task('server', ['nodemon'], function() {
+  browserSync.init({
+    files: ['src/*.js','src/public/*','src/public/css/*'],
+    proxy:  "http://localhost:3000",
+    port: 8080,
+    browser: ['google chrome']
+  });
+});
+
+
 // Start Server from dist directory 
 gulp.task('dist-server', function() {
     browserSync({
@@ -42,12 +80,12 @@ gulp.task('dist-server', function() {
 gulp.task('init',['get-phaser', 'get-debug']);
 
 gulp.task('get-phaser', function () {
-  request('https://raw.github.com/photonstorm/phaser/master/build/phaser.min.js').pipe(fs.createWriteStream('src/js/lib/phaser.min.js'));
-  request('https://raw.github.com/photonstorm/phaser/master/build/phaser.map').pipe(fs.createWriteStream('src/js/lib/phaser.map'));
+  request('https://raw.github.com/photonstorm/phaser/master/build/phaser.min.js').pipe(fs.createWriteStream('src/public/js/lib/phaser.min.js'));
+  request('https://raw.github.com/photonstorm/phaser/master/build/phaser.map').pipe(fs.createWriteStream('src/public/js/lib/phaser.map'));
 });
 
 gulp.task('get-debug', function() {
-  request('https://github.com/englercj/phaser-debug/releases/download/v1.1.0/phaser-debug.js').pipe(fs.createWriteStream('src/js/lib/phaser-debug.js'));
+  request('https://github.com/englercj/phaser-debug/releases/download/v1.1.0/phaser-debug.js').pipe(fs.createWriteStream('src/public/js/lib/phaser-debug.js'));
 });
 
 // Clear out dist directory
@@ -111,5 +149,5 @@ gulp.task('deploy', function() {
     }));
 });
 
-gulp.task('default', ['dev-server', 'watch']);
+gulp.task('default', ['server', 'watch']);
 
