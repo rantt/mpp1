@@ -131,7 +131,7 @@ gulp.task('lint', function() {
 
 // WatchFiles For Changes
 gulp.task('watch', function() {
-  gulp.watch(['src/js/*.js','src/index.html'], ['lint', browserSync.reload]);
+  gulp.watch(['src/public/js/*.js','src/public/index.html'], ['lint', browserSync.reload]);
 });
 
 // Deploy Source to server
