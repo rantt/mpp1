@@ -18,14 +18,41 @@ var aKey;
 var sKey;
 var dKey;
 var score = 0;
+var FLOOR,WALL;
 
 Game.Play = function(game) {
   this.game = game;
 };
 
 Game.Play.prototype = {
+  init: function() {
+    this.game.physics.startSystem(Phaser.Physics.ARCADE);
+  },
   create: function() {
     this.game.world.setBounds(0, 0 ,Game.w ,Game.h);
+
+		FLOOR = 0;
+		WALL = 1;
+
+    this.auto = new Automata(COLS, ROWS);
+    this.auto.generate();
+    this.auto.cleanup();
+
+    var cave = this.auto.csv();
+
+    this.game.load.tilemap('level', null, cave, Phaser.Tilemap.CSV );
+    this.map = this.game.add.tilemap('level', 64, 64);
+    this.map.addTilesetImage('tiles'); //use generated sheet
+    // this.map.setTileIndexCallback(5, this.collectCoin, this);
+
+    this.layer = this.map.createLayer(0);
+
+    this.map.setCollision(WALL); //Black Empty Space
+    this.layer.resizeWorld();
+
+		// this.player = this.game.add.sprite(Game.w/2, Game.h/2, 'player');
+
+		this.player = new Player(this.game, Game.w/2, Game.h/2);
 
     // // Music
     // this.music = this.game.add.sound('music');
@@ -45,7 +72,14 @@ Game.Play.prototype = {
     this.twitterButton.anchor.set(0.5);
     this.twitterButton.visible = false;
   },
-
+	makeBox: function(x,y) {
+		var bmd = this.game.add.bitmapData(x, y);
+		bmd.ctx.beginPath();
+		bmd.ctx.rect(0, 0, x, y);
+		bmd.ctx.fillStyle = '#fff';
+		bmd.ctx.fill();
+		return bmd;
+	},
   update: function() {
 
     // // Toggle Music

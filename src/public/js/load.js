@@ -1,8 +1,22 @@
+
+var TILE_SIZE = 10,
+ROWS = 64,
+COLS = 64;
+
+
+// ROWS = 16,
+// COLS = 16;
+
 var Game = {
-  w: 800,
-  h: 600
+  w: TILE_SIZE * COLS,
+  h: TILE_SIZE * ROWS 
 };
 
+// var Game = {
+//   w: 800,
+//   h: 600
+// };
+//
 // var w = 800;
 // var h = 600;
 
@@ -48,6 +62,10 @@ Game.Load.prototype = {
 
     //Load button for twitter
     this.game.load.image('twitter','assets/images/twitter.png');
+
+		this.game.load.spritesheet('tiles', 'assets/images/tiles.png',64,64,2);
+
+    this.game.load.spritesheet('player','assets/images/hero_x64.png',64,64,12);
 
     // Music Track
     // this.game.load.audio('music','soundtrack.mp3');
