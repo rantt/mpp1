@@ -4,6 +4,8 @@ var Player = function(game, x, y) {
   Phaser.Sprite.call(this, game, x, y, 'player');
 
   this.cursor = this.game.input.keyboard.createCursorKeys();
+  this.socket = io();
+
 
   //Setup WASD and extra keys
   wKey = this.game.input.keyboard.addKey(Phaser.Keyboard.W);
@@ -76,6 +78,7 @@ Player.prototype.movements = function() {
     this.body.velocity.x = 0;
     this.body.velocity.y = 0;
 
+
     var speed = 275;
 
     if (this.tweening) {
@@ -86,6 +89,8 @@ Player.prototype.movements = function() {
       //Don't move when the dialogue box is visible
       if (this.cursor.left.isDown || aKey.isDown) {
         this.body.velocity.x = -speed;
+        this.socket.emit('x',this.x);
+        this.socket.emit('y',this.y);
         this.direction = 'left';
         this.animations.play('left');
       }

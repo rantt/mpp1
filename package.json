@@ -33,6 +33,7 @@
   },
   "dependencies": {
     "express": "^4.13.4",
-    "gulp-nodemon": "^2.0.6"
+    "gulp-nodemon": "^2.0.6",
+    "socket.io": "^1.4.5"
   }
 }
