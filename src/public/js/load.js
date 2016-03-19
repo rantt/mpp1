@@ -12,6 +12,9 @@ var Game = {
   h: TILE_SIZE * ROWS 
 };
 
+
+// this.socket = io();
+
 // var Game = {
 //   w: 800,
 //   h: 600
@@ -65,7 +68,7 @@ Game.Load.prototype = {
 
 		this.game.load.spritesheet('tiles', 'assets/images/tiles.png',64,64,2);
 
-    this.game.load.spritesheet('player','assets/images/hero_x64.png',64,64,12);
+    this.game.load.spritesheet('hero','assets/images/hero_x64.png',64,64,12);
 
     // Music Track
     // this.game.load.audio('music','soundtrack.mp3');

@@ -33,51 +33,10 @@ var Player = function(game, x, y) {
 Player.prototype = Object.create(Phaser.Sprite.prototype);
 Player.prototype.update = function() {
   this.movements();
-  this.updatecamera();
-};
-Player.prototype.updatecamera = function() {
-    if (this.tweening) {
-      return;
-    }
-    this.tweening = true;
-    
-    var speed = 700;
-    var toMove = false;
-
-    if (this.y > this.game.camera.y + Game.h) {
-      Game.camera.y += 1;
-      toMove = true;
-    }
-    else if (this.y < this.game.camera.y) {
-      Game.camera.y -= 1;
-      toMove = true;
-    }
-    else if (this.x > this.game.camera.x + Game.w) {
-      Game.camera.x += 1;
-      toMove = true;
-    }
-    else if (this.x < this.game.camera.x) {
-      Game.camera.x -= 1;
-      toMove = true;
-    }
-
-    if (toMove) {
-      var t = this.game.add.tween(this.game.camera).to({x:Game.camera.x*Game.w, y:Game.camera.y*Game.h}, speed);
-      t.start();
-      t.onComplete.add(function(){this.tweening = false;}, this);
-    }
-    else {
-      this.tweening = false;
-    }
-};
-Player.prototype.reposition = function() {
-    this.x = this.tilex*tileSize-tileSize/2;
-    this.y = this.tiley*tileSize+tileSize/2;
 };
 Player.prototype.movements = function() {
     this.body.velocity.x = 0;
     this.body.velocity.y = 0;
-
 
     var speed = 275;
 

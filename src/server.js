@@ -4,26 +4,41 @@ var express = require('express'),
     http = require('http').Server(app),
 		io = require('socket.io').listen(http);
 
-
-
 // app.get('/', function(req, resp) {
 // });
 app.use(express.static(__dirname+'/public'));
 
-var client
-io.on('connection', function(socket) {
+var client;
+var actor;
+var clients = [];
+io.on('connect', function(socket) {
 	console.log('Connection Established');
 	console.log('sockid =' + socket.id);
 
-	socket.on('x', function(x) {
-		console.log('x: ' + x);
-		client = socket.id;
+  clients.push(socket.id);
+  io.emit('clients', clients);
+  
+	socket.on('player', function(player) {
+		console.log('player.x: ' + player.x);
+		console.log('player.y: ' + player.y);
+		console.log('player.moving: ' + player.moving);
+    // if (player.moving) {
+      io.emit('actor', {sid: socket.id, x: player.x, y: player.y, moving: player.moving, direction: player.direction});
+    // }
+    // io.emit('actor', {sid: socket.id, x: player.x, y: player.y, moving: player.moving, direction: player.direction});
+		// client = socket.id;
 	});
 
-	socket.on('y', function(y) {
-		console.log('y: ' + y);
-		client = socket.id;
-	});
+
+	// socket.on('x', function(x) {
+	// 	console.log('x: ' + x);
+	// 	client = socket.id;
+	// });
+  //
+	// socket.on('y', function(y) {
+	// 	console.log('y: ' + y);
+	// 	client = socket.id;
+	// });
 
 
 	socket.on('sender', function(sender) {
@@ -32,6 +47,7 @@ io.on('connection', function(socket) {
 	});
 
 	socket.on('disconnect', function() {
+    clients.splice(clients.indexOf(socket.id), 1);
 		console.log('player disconnected');
 	});
 
