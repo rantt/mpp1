@@ -1,15 +1,21 @@
-var Actor = function(game, x, y, image) {
+var Actor = function(game, map, tilex, tiley, image) {
   this.game = game;
+  this.map = map;
 
-  console.log('details',this.game, x, y, image);
-  Phaser.Sprite.call(this, this.game, x, y, image);
+  this.isMoving = false;
 
 
+  // console.log('details',this.game, x, y, image);
+  Phaser.Sprite.call(this, this.game, tilex*64, tiley*64, image);
+
+
+  this.marker = new Phaser.Point(tilex,tiley);
   // this.anchor.setTo(0.5);
 
   this.game.physics.arcade.enable(this); // set up player physics
 
   this.body.fixedRotation = true; // no rotation
+  this.body.moves = false;
   // this.body.moves = false;
 
   this.game.add.existing(this);
@@ -23,4 +29,59 @@ var Actor = function(game, x, y, image) {
 };
 
 Actor.prototype = Object.create(Phaser.Sprite.prototype);
+// Actor.prototype.update = function() {
+//   if (!this.isMoving) {
+//       if (this.direction === 'up') {
+//         this.frame = 1;
+//       }
+//       else if (this.direction === 'down') {
+//         this.frame = 0;
+//       }
+//       else if (this.direction === 'right') {
+//         this.frame = 2;
+//       }
+//       else if (this.direction === 'left') {
+//         this.frame = 3;
+//       }
+//       this.animations.stop();
+//   }
+//
+// };
+Actor.prototype.moveTo = function(x,y) {
+  if (this.isMoving || this.cantMove(x, y)) {return;}
+  this.isMoving = true;
+
+  this.game.add.tween(this).to({x: this.x + x*64, y: this.y + y*64}, 120, Phaser.Easing.Linear.None, true).onComplete.add(function() {
+      this.marker.x += x;
+      this.marker.y += y;
+      this.isMoving = false;
+
+    },this); 
+};
+Actor.prototype.cantMove = function(x,y) {
+  if (this.inCombat) {return true;}
+
+  var newx = this.marker.x + x;
+  var newy = this.marker.y + y;
+
+  var tile1 = this.map.getTile(newx, newy, 0); 
+
+  //Block Moving onto a non-existent tile
+  if (tile1 === null) {
+    return true;
+  }
+
+  //Block Layer 1 Collisions
+  if (this.map.getTile(newx, newy, 0).collideDown) {
+    return true;
+  }
+
+  // //Block Layer 2 Collisions if applicable
+  // if (this.map.getTile(newx, newy, 1) !== null) {
+  //   return this.map.getTile(newx, newy, 1).collideDown;
+  // }
+  // return false;
+
+};
+
 Actor.prototype.constructor = Actor;

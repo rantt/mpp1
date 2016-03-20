@@ -1,7 +1,7 @@
 
-var TILE_SIZE = 10,
-ROWS = 64,
-COLS = 64;
+var TILE_SIZE = 64,
+ROWS = 10,
+COLS = 10;
 
 
 // ROWS = 16,

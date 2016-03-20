@@ -21,9 +21,8 @@ io.on('connect', function(socket) {
 	socket.on('player', function(player) {
 		console.log('player.x: ' + player.x);
 		console.log('player.y: ' + player.y);
-		console.log('player.moving: ' + player.moving);
     // if (player.moving) {
-      io.emit('actor', {sid: socket.id, x: player.x, y: player.y, moving: player.moving, direction: player.direction});
+      io.emit('actor', {sid: socket.id, direction: player.direction, x: player.x, y: player.y});
     // }
     // io.emit('actor', {sid: socket.id, x: player.x, y: player.y, moving: player.moving, direction: player.direction});
 		// client = socket.id;
