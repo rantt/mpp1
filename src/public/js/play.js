@@ -50,11 +50,32 @@ Game.Play.prototype = {
 		FLOOR = 0;
 		WALL = 1;
 
-    this.auto = new Automata(COLS, ROWS);
-    this.auto.generate();
-    this.auto.cleanup();
-
-    var cave = this.auto.csv();
+    // this.auto = new Automata(COLS*2, ROWS*2);
+    // this.auto.generate();
+    // this.auto.cleanup();
+    //
+    // var cave = this.auto.csv();
+    var cave = "1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0\n\
+1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\n\
+1,1,1,1,1,0,1,0,0,1,1,0,0,0,0,0,0,0,0,0\n\
+1,1,1,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0\n\
+1,1,0,0,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0\n\
+1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\n\
+0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0\n\
+0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0\n\
+1,1,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0\n\
+1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\n\
+1,1,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0\n\
+1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\n\
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\n\
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\n\
+0,0,0,1,1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0\n\
+0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0\n\
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\n\
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\n\
+0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0\n\
+0,0,0,0,0,0,0,0,0,1,1,0,0,1,0,0,0,0,1,1\n";
+    console.log(cave);
 
     this.game.load.tilemap('level', null, cave, Phaser.Tilemap.CSV );
     map = this.game.add.tilemap('level', 64, 64);
@@ -85,6 +106,7 @@ Game.Play.prototype = {
           // console.log(actors[actor.sid].isMoving);
           actors[actor.sid].x = actor.x;
           actors[actor.sid].y = actor.y;
+
           if (actor.direction === 'left') {
             actors[actor.sid].moveTo(-1,0);
             actors[actor.sid].animations.play('left'); 
@@ -166,6 +188,8 @@ Game.Play.prototype = {
     dKey = this.game.input.keyboard.addKey(Phaser.Keyboard.D);
     // muteKey = game.input.keyboard.addKey(Phaser.Keyboard.M);
 
+
+    this.game.camera.follow(player, Phaser.Camera.FOLLOW_PLATFORMER);
 
     this.loadTouchControls();
 
