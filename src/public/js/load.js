@@ -1,7 +1,7 @@
 
-var TILE_SIZE = 64,
-ROWS = 10,
-COLS = 10;
+var TILE_SIZE = 32,
+ROWS = 20,
+COLS = 20;
 
 
 // ROWS = 16,
@@ -66,9 +66,11 @@ Game.Load.prototype = {
     //Load button for twitter
     this.game.load.image('twitter','assets/images/twitter.png');
 
-		this.game.load.spritesheet('tiles', 'assets/images/tiles.png',64,64,2);
+		// this.game.load.spritesheet('tiles', 'assets/images/tiles.png',64,64,2);
+		this.game.load.spritesheet('tiles', 'assets/images/tiles2.png',32,32,2);
 
-    this.game.load.spritesheet('hero','assets/images/hero_x64.png',64,64,12);
+    // this.game.load.spritesheet('hero','assets/images/hero_x64.png',64,64,12);
+    this.game.load.spritesheet('hero','assets/images/players.png',32,32,7);
 
     // Music Track
     // this.game.load.audio('music','soundtrack.mp3');

@@ -8,10 +8,10 @@ var Player = function(game, x, y) {
 
 
   //Setup WASD and extra keys
-  wKey = this.game.input.keyboard.addKey(Phaser.Keyboard.W);
-  aKey = this.game.input.keyboard.addKey(Phaser.Keyboard.A);
-  sKey = this.game.input.keyboard.addKey(Phaser.Keyboard.S);
-  dKey = this.game.input.keyboard.addKey(Phaser.Keyboard.D);
+  // wKey = this.game.input.keyboard.addKey(Phaser.Keyboard.W);
+  // aKey = this.game.input.keyboard.addKey(Phaser.Keyboard.A);
+  // sKey = this.game.input.keyboard.addKey(Phaser.Keyboard.S);
+  // dKey = this.game.input.keyboard.addKey(Phaser.Keyboard.D);
 
   // this.anchor.setTo(0.5);
 

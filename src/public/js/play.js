@@ -5,10 +5,10 @@
  * Using Math.round() will give you a non-uniform distribution!
  */
 
-// // Choose Random integer in a range
-// function rand (min, max) {
-//     return Math.floor(Math.random() * (max - min + 1)) + min;
-// }
+// Choose Random integer in a range
+function rand (min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 
 // var musicOn = true;
 
@@ -28,6 +28,7 @@ var actors = {};
 var SOCKET = io();
 var player;
 var map;
+var layer;
 
 Game.Play = function(game) {
   this.game = game;
@@ -39,12 +40,13 @@ Game.Play.prototype = {
   },
   create: function() {
     this.game.world.setBounds(0, 0 ,Game.w ,Game.h);
+    // console.log(Game.w, Game.h);
 
     //Setup WASD and extra keys
-    wKey = this.game.input.keyboard.addKey(Phaser.Keyboard.W);
-    aKey = this.game.input.keyboard.addKey(Phaser.Keyboard.A);
-    sKey = this.game.input.keyboard.addKey(Phaser.Keyboard.S);
-    dKey = this.game.input.keyboard.addKey(Phaser.Keyboard.D);
+    // wKey = this.game.input.keyboard.addKey(Phaser.Keyboard.W);
+    // aKey = this.game.input.keyboard.addKey(Phaser.Keyboard.A);
+    // sKey = this.game.input.keyboard.addKey(Phaser.Keyboard.S);
+    // dKey = this.game.input.keyboard.addKey(Phaser.Keyboard.D);
     cursors = this.game.input.keyboard.createCursorKeys();
 
 		FLOOR = 0;
@@ -55,52 +57,76 @@ Game.Play.prototype = {
     // this.auto.cleanup();
     //
     // var cave = this.auto.csv();
-    var cave = "1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0\n\
-1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\n\
-1,1,1,1,1,0,1,0,0,1,1,0,0,0,0,0,0,0,0,0\n\
-1,1,1,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0\n\
-1,1,0,0,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0\n\
-1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\n\
-0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0\n\
-0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0\n\
-1,1,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0\n\
-1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\n\
-1,1,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0\n\
-1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\n\
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\n\
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\n\
-0,0,0,1,1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0\n\
-0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0\n\
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\n\
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0\n\
-0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0\n\
-0,0,0,0,0,0,0,0,0,1,1,0,0,1,0,0,0,0,1,1\n";
-    console.log(cave);
 
-    this.game.load.tilemap('level', null, cave, Phaser.Tilemap.CSV );
-    map = this.game.add.tilemap('level', 64, 64);
-    map.addTilesetImage('tiles'); //use generated sheet
-    // this.map.setTileIndexCallback(5, this.collectCoin, this);
+    var cave = "1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1\n\
+1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1\n\
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1\n\
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,1,1,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1\n\
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1\n\
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1\n\
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1\n\
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1\n\
+0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,1,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1\n\
+0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1\n\
+0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1\n\
+0,1,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1\n\
+0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1\n\
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1\n\
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1\n\
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1\n\
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,1,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1\n\
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,1,1,0,1,1,0,1,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1\n\
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,1,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1\n\
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,1,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1\n\
+0,0,0,0,0,0,0,0,1,1,1,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,1,1,1,1,1,1,0,0,1,1,1,1,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1\n\
+0,0,0,0,0,0,0,1,1,1,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1,1,1,1,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1\n\
+0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1\n\
+0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1\n\
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1\n\
+0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,1,1,1,1,1,1,1,1,1,1\n\
+0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,1,1,0,0,1,1,1,1,1,1,1,1,1,1\n\
+0,1,1,1,1,1,1,0,0,0,1,1,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,1,1,0,0,1,1,1,1,1,1,1,1,1,1\n\
+0,0,1,1,1,1,1,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1\n\
+0,0,1,1,1,1,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1\n\
+0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1\n\
+1,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1\n\
+1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1\n\
+0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1\n\
+0,0,1,1,1,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1\n\
+1,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1\n\
+1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1\n\
+1,0,0,1,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1\n\
+1,1,0,0,0,1,0,0,0,0,0,0,0,0,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1\n\
+1,1,0,0,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1";
 
-    this.layer = map.createLayer(0);
+    // console.log(cave);
+      game.load.tilemap('level', null, cave, Phaser.Tilemap.CSV );
+      map = game.add.tilemap('level', 32, 32);
+      map.addTilesetImage('tiles'); //use generated sheet
 
-    map.setCollision(WALL); //Black Empty Space
-    this.layer.resizeWorld();
+      layer = map.createLayer(0);
+
+      map.setCollision(WALL); //Black Empty Space
+      layer.resizeWorld();
+
+
+
 
 		// player = this.game.add.sprite(Game.w/2, Game.h/2, 'player');
 
 		// player = new Actor(this.game, Game.w/2, Game.h/2, 'hero');
-		player = new Actor(this.game, map, 5, 5, 'hero');
+		player = new Actor(this.game, map, 5, 5, 'hero', rand(0,6));
     player.sid = SOCKET.io.engine.id;
 
     actors['/#'+SOCKET.io.engine.id] = player;
 
 
     SOCKET.on('actor', function(actor) {
+      console.log('blah');
       if (actors[actor.sid] != player) {
         if (actors[actor.sid] === undefined) {
 
-          actors[actor.sid] = new Actor(game, map, actor.x, actor.y, 'hero');
+          actors[actor.sid] = new Actor(game, map, actor.x, actor.y, 'hero', actor.frame);
 
         }else {
           // console.log(actors[actor.sid].isMoving);
@@ -109,16 +135,16 @@ Game.Play.prototype = {
 
           if (actor.direction === 'left') {
             actors[actor.sid].moveTo(-1,0);
-            actors[actor.sid].animations.play('left'); 
+            // actors[actor.sid].animations.play('left'); 
           }else if (actor.direction === 'right') {
             actors[actor.sid].moveTo(1,0);
-            actors[actor.sid].animations.play('right'); 
+            // actors[actor.sid].animations.play('right'); 
           }else if (actor.direction === 'up') {
             actors[actor.sid].moveTo(0,-1);
-            actors[actor.sid].animations.play('up'); 
+            // actors[actor.sid].animations.play('up'); 
           }else if (actor.direction === 'down') {
             actors[actor.sid].moveTo(0,1);
-            actors[actor.sid].animations.play('down'); 
+            // actors[actor.sid].animations.play('down'); 
           }
 
         }
@@ -129,48 +155,50 @@ Game.Play.prototype = {
     player.movements = function() {
 
         if (!this.tweening) {
+
+
           if ( (cursors.left.isDown || aKey.isDown || leftArrow)) {
             this.moveTo(-1,0);
             this.direction = 'left';
-            this.animations.play('left');
-            SOCKET.emit('player',{direction: 'left', x: this.x, y: this.y});
+            // this.animations.play('left');
+            SOCKET.emit('player',{direction: 'left', x: this.x, y: this.y,frame: this.frame});
           }
           else if ( (cursors.right.isDown || dKey.isDown || rightArrow)) {
             this.moveTo(1,0);
             this.direction = 'right';
-            this.animations.play('right');
+            // this.animations.play('right');
             // SOCKET.emit('player',{x: 1, y: 0});
-            SOCKET.emit('player',{direction: 'right', x: this.x, y: this.y});
+            SOCKET.emit('player',{direction: 'right', x: this.x, y: this.y, frame: this.frame});
           }
           else if ( (cursors.up.isDown || wKey.isDown || upArrow)) {
             this.moveTo(0,-1);
             this.direction = 'up';
-            this.animations.play('up');
+            // this.animations.play('up');
             // SOCKET.emit('player',{x: 0, y: -1});
-            SOCKET.emit('player',{direction: 'up', x: this.x, y: this.y});
+            SOCKET.emit('player',{direction: 'up', x: this.x, y: this.y, frame: this.frame});
           }
           else if ( (cursors.down.isDown || sKey.isDown || downArrow)) {
             this.moveTo(0,1);
             this.direction = 'down';
-            this.animations.play('down');
+            // this.animations.play('down');
             // SOCKET.emit('player',{x: 0, y: 1});
-            SOCKET.emit('player',{direction: 'down', x: this.x, y: this.y});
+            SOCKET.emit('player',{direction: 'down', x: this.x, y: this.y, frame: this.frame});
           }
-          else {
-            if (this.direction === 'up') {
-              this.frame = 1;
-            }
-            else if (this.direction === 'down') {
-              this.frame = 0;
-            }
-            else if (this.direction === 'right') {
-              this.frame = 2;
-            }
-            else if (this.direction === 'left') {
-              this.frame = 3;
-            }
-            this.animations.stop();
-          }
+          // else {
+          //   if (this.direction === 'up') {
+          //     this.frame = 1;
+          //   }
+          //   else if (this.direction === 'down') {
+          //     this.frame = 0;
+          //   }
+          //   else if (this.direction === 'right') {
+          //     this.frame = 2;
+          //   }
+          //   else if (this.direction === 'left') {
+          //     this.frame = 3;
+          //   }
+          //   this.animations.stop();
+          // }
         } 
 
     };
