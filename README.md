@@ -1,10 +1,10 @@
-# (#onegameaweek - Game 11)
+#Multiplayer Part 1 (#onegameaweek - Game 11)
 
 ~~~description~~~
 
-![screenshot](screenshots/<game_name>.gif)
+![screenshot](screenshots/mpp1.gif)
 
-You can play the game [here](http://divideby5.com/games/<game_name>).
+You can play the game [here](http://divideby5.com/games/mpp1).
 
 ##Tools
 Developed using [Phaser.js](http://phaser.io)
