@@ -1,6 +1,6 @@
 #Multiplayer Part 1 (#onegameaweek - Game 11)
 
-~~~description~~~
+Multiplayer movement example.  Shows remote user movements and basic chat.
 
 ![screenshot](screenshots/mpp1.gif)
 
